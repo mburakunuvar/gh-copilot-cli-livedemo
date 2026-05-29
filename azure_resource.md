@@ -5,12 +5,12 @@
 
 | Property | Value |
 |---|---|
-| **Subscription** | _TBD_ |
-| **Resource Group** | _TBD_ |
-| **Container App Name** | _TBD_ |
-| **Container Apps Environment** | _TBD_ |
-| **Container Registry Name** | _TBD_ |
-| **ACR Login Server** | _TBD_ |
-| **Region** | _TBD_ |
-| **Live URL** | _TBD_ |
-| **Ingress FQDN** | _TBD_ |
+| **Subscription** | 9103cd46-543d-4b44-a957-f011acb997c6 |
+| **Resource Group** | gh-copilot-cli-live-demo-rg |
+| **Container App Name** | gh-copilot-cli-demo |
+| **Container Apps Environment** | gh-copilot-cli-env |
+| **Container Registry Name** | ghcopilotclidemo |
+| **ACR Login Server** | ghcopilotclidemo.azurecr.io |
+| **Region** | swedencentral |
+| **Live URL** | _Pending deployment_ |
+| **Ingress FQDN** | _Pending deployment_ |
