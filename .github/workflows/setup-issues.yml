@@ -1,0 +1,255 @@
+name: Setup Demo Issues
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-issues:
+    name: Create demo issues
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      - name: Create labels
+        run: |
+          gh label create "init-demo"    --repo "$REPO" --color "D93F0B" --description "Initial demo setup tasks"         --force
+          gh label create "coding-agent" --repo "$REPO" --color "0E8A16" --description "Assigned to GitHub Coding Agent"  --force
+          gh label create "copilot-cli"  --repo "$REPO" --color "1D76DB" --description "Assigned to Copilot CLI"          --force
+          gh label create "agent-mode"   --repo "$REPO" --color "5319E7" --description "Assigned to Agent Mode in IDE"    --force
+          gh label create "post-demo"    --repo "$REPO" --color "FBCA04" --description "Post-demo cleanup tasks"          --force
+
+      - name: Check if demo issues already exist
+        id: check
+        run: |
+          FOUND=$(gh issue list --repo "$REPO" --state all --search "Azure Container Apps Setup in:title" --json number --jq 'length')
+          if [ "$FOUND" -gt 0 ]; then
+            echo "Demo issues already exist. To re-create, close/delete existing demo issues first."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Issue 1 — Azure Container Apps Setup
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Deploy this repo as one container running on Azure Container Apps.
+
+          ### Steps
+          1. `az login`
+          2. `az group create --name <rg-name> --location <region>`
+          3. `az acr create --name <acr-name> --resource-group <rg-name> --sku Basic`
+          4. `az containerapp env create --name <env-name> --resource-group <rg-name> --location <region>`
+          5. Set these repository secrets:
+             - `AZURE_CLIENT_ID`
+             - `AZURE_TENANT_ID`
+             - `AZURE_SUBSCRIPTION_ID`
+             - `AZURE_CLIENT_SECRET`
+             - `ACR_LOGIN_SERVER` from `az acr show --name <acr-name> --resource-group <rg-name> --query loginServer -o tsv`
+             - `ACR_USERNAME` from `az acr credential show --name <acr-name> --resource-group <rg-name> --query username -o tsv`
+             - `ACR_PASSWORD` from `az acr credential show --name <acr-name> --resource-group <rg-name> --query passwords[0].value -o tsv`
+             - `AZURE_RESOURCE_GROUP` set to `<rg-name>`
+             - `AZURE_CONTAINERAPP_NAME` set to `<app-name>`
+             - `AZURE_CONTAINERAPPS_ENVIRONMENT` set to `<env-name>`
+          6. `gh workflow run "Azure Container Apps CI/CD"`
+          7. Verify the live URL: `az containerapp show --name <app-name> --resource-group <rg-name> --query "properties.configuration.ingress.fqdn" -o tsv`
+          8. Update `azure_resource.md` with the actual resource details, commit and push.
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "init-demo" --title "Azure Container Apps Setup" --body-file /tmp/body.md
+
+      - name: Issue 2 — Scaffold and Beautify the Home Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Scaffold and beautify the existing `index.html` as a **Customize GitHub Copilot CLI** overview page with:
+          - Title: **Customize GitHub Copilot CLI**
+          - Copilot CLI works best when customized for your specific project and workflow.
+          - Five navigation buttons linking to:
+            1. **Custom Instructions** → `custominstructions.html`
+            2. **Skills** → `skills.html`
+            3. **Custom Agents** → `customagents.html`
+            4. **MCP Servers** → `mcp.html`
+            5. **Hooks** → `hooks.html`
+
+          The HTML files (`index.html`, `custominstructions.html`, `skills.html`, `customagents.html`, `mcp.html`, `hooks.html`) already exist in the repo — no need to create the folder structure.
+
+          ## Assigned to
+          GitHub Copilot CLI
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Scaffold and Beautify the Home Page" --body-file /tmp/body.md
+
+      - name: Issue 3 — Custom Instructions Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Build a child page for adding custom instructions for GitHub Copilot CLI.
+
+          - Title: **Custom Instructions for GitHub Copilot CLI**
+          - The page should follow the same structure and style as the home page (`index.html`).
+          - Use https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions for content.
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once the page is built:
+          1. Commit the changes
+          2. Pull and rebase from remote: `git pull --rebase origin main`
+          3. Push to remote: `git push origin main`
+          4. Close this issue from the GitHub UI or with `gh issue close <this-issue-number>`
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Custom Instructions Page" --body-file /tmp/body.md
+
+      - name: Issue 4 — Skills Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Build a child page for adding agent skills for GitHub Copilot CLI.
+
+          - Title: **Adding Agent Skills for GitHub Copilot CLI**
+          - The page should follow the same structure and style as the home page (`index.html`).
+          - Use https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills for content.
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once the page is built:
+          1. Commit the changes
+          2. Pull and rebase from remote: `git pull --rebase origin main`
+          3. Push to remote: `git push origin main`
+          4. Close this issue from the GitHub UI or with `gh issue close <this-issue-number>`
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Skills Page" --body-file /tmp/body.md
+
+      - name: Issue 5 — Custom Agents Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Build a child page for creating and using custom agents for GitHub Copilot CLI.
+
+          - Title: **Creating and Using Custom Agents for GitHub Copilot CLI**
+          - The page should follow the same structure and style as the home page (`index.html`).
+          - Use https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli for content.
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once the page is built:
+          1. Commit the changes
+          2. Pull and rebase from remote: `git pull --rebase origin main`
+          3. Push to remote: `git push origin main`
+          4. Close this issue from the GitHub UI or with `gh issue close <this-issue-number>`
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Custom Agents Page" --body-file /tmp/body.md
+
+      - name: Issue 6 — MCP Servers Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Build a child page for adding MCP servers for GitHub Copilot CLI.
+
+          - Title: **Adding MCP Servers for GitHub Copilot CLI**
+          - The page should follow the same structure and style as the home page (`index.html`).
+          - Use https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers for content.
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once the page is built:
+          1. Commit the changes
+          2. Pull and rebase from remote: `git pull --rebase origin main`
+          3. Push to remote: `git push origin main`
+          4. Close this issue from the GitHub UI or with `gh issue close <this-issue-number>`
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "MCP Servers Page" --body-file /tmp/body.md
+
+      - name: Issue 7 — Hooks Page
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          Build a child page for adding hooks for GitHub Copilot CLI.
+
+          - Title: **Adding Hooks for GitHub Copilot CLI**
+          - The page should follow the same structure and style as the home page (`index.html`).
+          - Use https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks for content.
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once the page is built:
+          1. Commit the changes
+          2. Pull and rebase from remote: `git pull --rebase origin main`
+          3. Push to remote: `git push origin main`
+          4. Close this issue from the GitHub UI or with `gh issue close <this-issue-number>`
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Hooks Page" --body-file /tmp/body.md
+
+      - name: Issue 8 — Azure Deployment
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          The application is deployed to Azure Container Apps and a CI/CD workflow is in place (`.github/workflows/azure-container-apps.yml`).
+
+          > ⚠️ **Important**: The workflow only triggers on `workflow_dispatch` — **not on push**. Trigger manually with:
+          > ```bash
+          > gh workflow run "Azure Container Apps CI/CD"
+          > ```
+
+          For this step:
+          1. Confirm the **Home Page**, **Custom Instructions**, **Skills**, **Custom Agents**, **MCP Servers**, and **Hooks** issues are closed
+          2. Verify the latest changes are live at the deployed URL
+          3. If anything needs to be re-triggered, trigger the workflow manually using the command above
+
+          ## Pre-flight requirement
+          The **Azure Container Apps Setup** issue must be completed first (environment created, deployment secrets added).
+
+          ## Assigned to
+          GitHub Copilot CLI
+
+          ## Completion
+          Once deployment is verified and the live site is confirmed working, close this issue from the GitHub UI or with `gh issue close <this-issue-number>`.
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "copilot-cli" --title "Azure Deployment" --body-file /tmp/body.md
+
+      - name: Issue 9 — Clean Up Azure Resources
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          cat > /tmp/body.md <<'EOF'
+          ## Task
+          After the demo is complete, delete all Azure resources to avoid unnecessary costs.
+
+          ### Steps
+          1. Go to the [Azure Portal](https://portal.azure.com)
+          2. Navigate to the **Resource Group** created for this demo
+          3. Click **Delete resource group** and confirm
+          4. Verify the Container App, Container Apps environment, Container Registry, and any associated resources are fully removed
+
+          > ⚠️ Only do this after the demo is fully complete and you no longer need the live URL.
+          EOF
+          sed -i 's/^          //' /tmp/body.md
+          gh issue create --repo "$REPO" --label "post-demo" --title "Clean Up Azure Resources" --body-file /tmp/body.md
