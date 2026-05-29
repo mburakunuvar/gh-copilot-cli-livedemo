@@ -3,9 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Primitives</title>
+  <title>Custom Instructions for GitHub Copilot CLI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 0;
+    }
+    .container {
+      max-width: 860px;
+      width: 90%;
+      padding: 2.5rem 2rem;
+      background: rgba(13, 17, 23, 0.4);
+      border: 1px solid #30363d;
+      border-radius: 12px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #58a6ff;
+      margin-bottom: 0.75rem;
+    }
+    .subtitle {
+      color: #8b949e;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    section {
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      color: #79c0ff;
+      margin-bottom: 0.6rem;
+    }
+    p, li {
+      line-height: 1.6;
+      color: #c9d1d9;
+    }
+    ul, ol {
+      margin-left: 1.4rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+      color: #a5d6ff;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.7rem 1rem;
+      background: #21262d;
+      color: #58a6ff;
+      text-decoration: none;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .back-link:hover,
+    .back-link:focus {
+      background: #30363d;
+      border-color: #58a6ff;
+      outline: none;
+    }
+  </style>
 </head>
-<body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;background:#f5f5f5;color:#888;">
-  <p style="font-size:1.5rem;">This will be the Custom Instructions Page </p>
+<body>
+  <main class="container">
+    <h1>Custom Instructions for GitHub Copilot CLI</h1>
+    <p class="subtitle">
+      Define persistent guidance so Copilot CLI automatically uses your project standards, tooling, and workflow details without repeating them in every prompt.
+    </p>
+
+    <section>
+      <h2>Supported instruction types</h2>
+      <ul>
+        <li><strong>Repository-wide:</strong> <code>.github/copilot-instructions.md</code> applies across the repo.</li>
+        <li><strong>Path-specific:</strong> <code>.github/instructions/NAME.instructions.md</code> applies by <code>applyTo</code> glob patterns.</li>
+        <li><strong>Agent instructions:</strong> <code>AGENTS.md</code> (plus optional <code>CLAUDE.md</code>/<code>GEMINI.md</code> at repo root).</li>
+        <li><strong>Local:</strong> <code>$HOME/.copilot/copilot-instructions.md</code> for your machine only.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Create repository-wide instructions</h2>
+      <ol>
+        <li>Create <code>.github/copilot-instructions.md</code> in the repository root.</li>
+        <li>Write clear natural-language instructions in Markdown.</li>
+        <li>Save the file; Copilot starts using it automatically.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Create path-specific instructions</h2>
+      <ol>
+        <li>Create <code>.github/instructions</code> (and optional subfolders).</li>
+        <li>Add one or more files ending in <code>.instructions.md</code>.</li>
+        <li>Add frontmatter with <code>applyTo</code>, e.g. <code>**/*.ts,**/*.tsx</code>.</li>
+        <li>Optionally set <code>excludeAgent</code> to <code>code-review</code> or <code>cloud-agent</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Behavior notes</h2>
+      <ul>
+        <li>Changes are available on your next prompt in the current or future CLI sessions.</li>
+        <li>Repo-wide and matching path-specific instructions are combined.</li>
+        <li>Avoid conflicts between instruction files; precedence can be non-deterministic.</li>
+      </ul>
+    </section>
+
+    <a class="back-link" href="index.html" aria-label="Back to home">← Back to Home</a>
+  </main>
 </body>
 </html>

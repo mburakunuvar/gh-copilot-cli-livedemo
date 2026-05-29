@@ -3,9 +3,128 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agentic Platform Engineering</title>
+  <title>Adding Hooks for GitHub Copilot CLI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 860px;
+      width: 100%;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #58a6ff;
+      margin-bottom: 0.75rem;
+    }
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .section {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      color: #58a6ff;
+      margin-bottom: 0.6rem;
+    }
+    p, li {
+      line-height: 1.6;
+      color: #c9d1d9;
+    }
+    ul, ol {
+      padding-left: 1.2rem;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+      color: #58a6ff;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.7rem 1rem;
+      background: #21262d;
+      color: #58a6ff;
+      text-decoration: none;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .back-link:hover, .back-link:focus {
+      background: #30363d;
+      border-color: #58a6ff;
+      outline: none;
+    }
+  </style>
 </head>
-<body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;background:#f5f5f5;color:#888;">
-  <p style="font-size:1.5rem;">This will be the Hooks page</p>
+<body>
+  <main class="container">
+    <h1>Adding Hooks for GitHub Copilot CLI</h1>
+    <p class="subtitle">
+      Hooks let you run custom shell commands at key points in Copilot agent sessions so you can automate logging, notifications, validation, and other workflow steps.
+    </p>
+
+    <section class="section">
+      <h2>Prerequisite (Windows)</h2>
+      <p>Install PowerShell 7+ and confirm it is in your PATH:</p>
+      <p><code>pwsh --version</code> (install with <code>winget install Microsoft.PowerShell</code> if needed).</p>
+    </section>
+
+    <section class="section">
+      <h2>Create a repository-level hook</h2>
+      <ol>
+        <li>Create <code>.github\hooks\NAME.json</code>.</li>
+        <li>Use a top-level structure with <code>"version": 1</code> and a <code>"hooks"</code> object.</li>
+        <li>Configure commands per trigger (for example: <code>sessionStart</code>, <code>preToolUse</code>, <code>postToolUse</code>, <code>errorOccurred</code>).</li>
+        <li>Include both <code>bash</code> and <code>powershell</code> keys for cross-platform support.</li>
+        <li>Commit and merge to the default branch so hooks run in agent sessions.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>Create a user-level hook</h2>
+      <ul>
+        <li>Store hook files in <code>~/.copilot/hooks/</code> (or <code>$COPILOT_HOME/hooks/</code>) on macOS/Linux.</li>
+        <li>Store hook files in <code>%USERPROFILE%\.copilot\hooks\</code> (or <code>%COPILOT_HOME%\hooks\</code>) on Windows.</li>
+        <li>Restart Copilot CLI after changes so configurations reload.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Troubleshooting and debugging</h2>
+      <ul>
+        <li>If hooks do not execute, verify file location, valid JSON, and <code>"version": 1</code>.</li>
+        <li>If hooks time out, raise <code>timeoutSec</code> or optimize scripts.</li>
+        <li>Keep hook JSON output compact and valid (single line).</li>
+        <li>Add script logging and test hooks locally with piped sample input.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>References</h2>
+      <p>See the GitHub Copilot hooks reference for trigger payloads and advanced examples.</p>
+    </section>
+
+    <a class="back-link" href="index.html">← Back to Customize GitHub Copilot CLI</a>
+  </main>
 </body>
 </html>

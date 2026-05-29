@@ -3,9 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Primitives</title>
+  <title>Creating and Using Custom Agents for GitHub Copilot CLI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #58a6ff;
+      margin-bottom: 0.75rem;
+      line-height: 1.25;
+    }
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+    h2 {
+      color: #58a6ff;
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p, li {
+      line-height: 1.6;
+      color: #c9d1d9;
+    }
+    ul, ol {
+      margin-left: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    li { margin-bottom: 0.5rem; }
+    code {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+      color: #79c0ff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 0.9rem;
+      overflow-x: auto;
+      margin: 0.75rem 0 1rem;
+      color: #c9d1d9;
+    }
+    .note {
+      margin: 0.75rem 0 1rem;
+      padding: 0.75rem;
+      border: 1px solid #30363d;
+      border-left: 4px solid #58a6ff;
+      background: #161b22;
+      border-radius: 8px;
+      color: #8b949e;
+    }
+    .footer-link {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer-link:hover, .footer-link:focus { text-decoration: underline; }
+  </style>
 </head>
-<body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;background:#f5f5f5;color:#888;">
-  <p style="font-size:1.5rem;">This will be the Custom Agents Page </p>
+<body>
+  <main class="container">
+    <h1>Creating and Using Custom Agents for GitHub Copilot CLI</h1>
+    <p class="subtitle">
+      Custom agents let Copilot delegate specialized tasks to subagents with separate context windows, keeping your main session focused.
+    </p>
+
+    <h2>What custom agents are</h2>
+    <p>
+      A custom agent is defined in a Markdown profile file ending in <code>.agent.md</code>. Copilot can call it when your task matches that agent’s expertise.
+    </p>
+
+    <h2>How to create a custom agent</h2>
+    <ol>
+      <li>In interactive mode, run <code>/agent</code> and select <strong>Create new agent</strong>.</li>
+      <li>Choose where to store it:
+        <ul>
+          <li><strong>Project</strong>: <code>.github/agents/</code></li>
+          <li><strong>User</strong>: <code>~/.copilot/agents/</code></li>
+        </ul>
+      </li>
+      <li>Pick one creation path:
+        <ul>
+          <li><strong>Use Copilot</strong> to draft the profile from your description.</li>
+          <li><strong>Create manually</strong> by entering name, description, and behavior instructions.</li>
+        </ul>
+      </li>
+      <li>Select tool access (all tools by default, or restricted via a <code>tools</code> specification).</li>
+      <li>Restart the CLI so the new agent is loaded.</li>
+    </ol>
+    <p class="note">
+      If an agent with the same name exists in both locations, the user-level agent in <code>~/.copilot/agents/</code> takes precedence.
+    </p>
+
+    <h2>How to use a custom agent</h2>
+    <ul>
+      <li><strong>Slash command:</strong> <code>/agent</code>, then pick an agent and enter a prompt.</li>
+      <li><strong>Explicit instruction:</strong> ask Copilot to use a named agent in your prompt.</li>
+      <li><strong>By inference:</strong> use wording or trigger phrases described in the agent profile.</li>
+      <li><strong>Programmatically:</strong> call the CLI with <code>--agent</code> and <code>--prompt</code>.</li>
+    </ul>
+    <pre><code>copilot --agent security-auditor --prompt "Check /src/app/validator.go"</code></pre>
+    <p>
+      The <code>--agent</code> value is the agent profile filename without the <code>.agent.md</code> suffix.
+    </p>
+
+    <a class="footer-link" href="index.html" aria-label="Back to main page">&larr; Back to Customize GitHub Copilot CLI</a>
+  </main>
 </body>
 </html>
