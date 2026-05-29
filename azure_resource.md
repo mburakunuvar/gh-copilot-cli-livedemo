@@ -12,5 +12,5 @@
 | **Container Registry Name** | ghcopilotclidemo |
 | **ACR Login Server** | ghcopilotclidemo.azurecr.io |
 | **Region** | swedencentral |
-| **Live URL** | _Pending deployment_ |
-| **Ingress FQDN** | _Pending deployment_ |
+| **Live URL** | https://gh-copilot-cli-demo.salmonsea-6641cc53.swedencentral.azurecontainerapps.io |
+| **Ingress FQDN** | gh-copilot-cli-demo.salmonsea-6641cc53.swedencentral.azurecontainerapps.io |
